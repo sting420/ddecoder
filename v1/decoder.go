@@ -49,7 +49,7 @@ func splitChunk(r int32) []int32 {
 
 	return originalBytes
 }
-func CharCodeAt(s string, n int) int {
+func charCodeAt(s string, n int) int {
 	i := 0
 	for _, r := range s {
 		if i == n {
@@ -60,13 +60,13 @@ func CharCodeAt(s string, n int) int {
 	return 0
 }
 
-func SimpleHash(str string) int {
+func simpleHash(str string) int {
 	if str == "" {
 		return 1789537805
 	}
 	var t int = 0
 	for e := 0; e < len(str); e++ {
-		t = int(int32(t)<<5) - t + CharCodeAt(str, e)
+		t = int(int32(t)<<5) - t + charCodeAt(str, e)
 	}
 	if t == 0 {
 		return 1789537805
@@ -75,7 +75,7 @@ func SimpleHash(str string) int {
 	}
 
 }
-func SecureAt(a []byte, i int) byte {
+func secureAt(a []byte, i int) byte {
 	if len(a) <= i {
 		return 0
 	} else {
@@ -84,12 +84,12 @@ func SecureAt(a []byte, i int) byte {
 }
 
 func DecodePayload(payload string, cid string, hash string, scriptSeed int32) (string, error) {
-	var seed int32 = int32(SimpleHash(cid)) ^ int32(SimpleHash(hash)) ^ scriptSeed
+	var seed int32 = int32(simpleHash(cid)) ^ int32(simpleHash(hash)) ^ scriptSeed
 
 	byteArray := []byte(payload)
 	firstStepArray := []int32{}
 	for i := 0; i < len(byteArray); i += 4 {
-		var chunk int32 = int32(reverseCalcShift(SecureAt(byteArray, i))<<18) + int32(reverseCalcShift(SecureAt(byteArray, i+1))<<12) + int32(reverseCalcShift(SecureAt(byteArray, i+2))<<6) + int32(reverseCalcShift(SecureAt(byteArray, i+3)))
+		var chunk int32 = int32(reverseCalcShift(secureAt(byteArray, i))<<18) + int32(reverseCalcShift(secureAt(byteArray, i+1))<<12) + int32(reverseCalcShift(secureAt(byteArray, i+2))<<6) + int32(reverseCalcShift(secureAt(byteArray, i+3)))
 		split := splitChunk(chunk)
 		firstStepArray = append(firstStepArray, split...)
 	}
